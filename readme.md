@@ -3,11 +3,17 @@
 ## Setup linux
 
 `sudo apt-get update`
+
 `sudo apt-get install python3`
+
 `sudo apt-get install python3-pip`
+
 `sudo apt-get install virtualenv`
+
 `virtualenv venv`
+
 `. venv/bin/activate`
+
 `pip3 install -e .`
 
 ## Run linux
@@ -21,8 +27,11 @@
 3. Następnie
 
 `pip install virtualenv`
+
 `python -m venv .venv`
+
 `.venv\Scripts\activate.bat`
+
 `pip install -e .`
 
 ## Run windows
