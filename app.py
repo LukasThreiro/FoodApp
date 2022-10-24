@@ -14,8 +14,10 @@ except:
     app.config.from_object(DefaultFlaskConfig)
 
 # API SETUP
-from services.accountServices import RegisterAccount
+from services.accountServices import RegisterAccount, LoginAccount, LogoutAccount
 api.add_resource(RegisterAccount, RegisterAccount().url)
+api.add_resource(LoginAccount, LoginAccount().url)
+api.add_resource(LogoutAccount, LogoutAccount().url)
 
-if __name__ == "__main__":
+if (__name__ == "__main__"):
     app.run()

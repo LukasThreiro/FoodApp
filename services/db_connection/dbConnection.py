@@ -19,7 +19,18 @@ class DBConnection():
 	
 	def findByID(self, collection, _id):
 		res = self.db[collection].find_one({"_id": ObjectId(_id)})
-		res["_id"] = str(res["_id"])
+
+		if (res != None):
+			res["_id"] = str(res["_id"])
+
+		return res
+
+	def findOne(self, collection, query):
+		res = self.db[collection].find_one(query)
+
+		if (res != None):
+			res["_id"] = str(res["_id"])
+
 		return res
 
 	def insertOne(self, collection, doc):
