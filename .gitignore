@@ -1,3 +1,4 @@
+venv
 __pycache__
 flaskConfig.py
 services/__pycache__
