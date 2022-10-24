@@ -33,6 +33,21 @@ class DBConnection():
 
 		return res
 
+	def find(self, collection, query):
+		tmp = []
+		res = self.db[collection].find(query)
+
+		if (res != None):
+			for r in res:
+				r["_id"] = str(r["_id"])
+				tmp.append(r)
+
+		return tmp
+
+	def findByIDAndOtherConditions(self, collection, _id, query):
+		query["_id"] = ObjectId(_id)
+		return self.find(collection, query)
+
 	def insertOne(self, collection, doc):
 		_id = self.db[collection].insert_one(doc)
 		res = self.findByID(collection, _id.inserted_id)

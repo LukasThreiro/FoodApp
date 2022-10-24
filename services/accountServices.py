@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 from .db_connection.dbConnection import DBConnection
 
 # Input: {name, email, password, telephone}
+#
 # Output: {
 #	status, (0 means ok)
 #	response (Account details or error message)
@@ -12,20 +13,26 @@ class RegisterAccount(Resource):
 	def __init__(self):
 		self.url = "/account/register"
 
+	def checkParam(self, param):
+		if ((param == None) or (param == "")):
+			return None
+		else:
+			return str(param)
+
 	def post(self):
 		try:
 			account = {
-				"name": str(request.form.get("name")),
-				"email": str(request.form.get("email")),
-				"password": str(request.form.get("password")),
-				"telephone": str(request.form.get("telephone")),
+				"name": self.checkParam(request.form.get("name")),
+				"email": self.checkParam(request.form.get("email")),
+				"password": self.checkParam(request.form.get("password")),
+				"telephone": self.checkParam(request.form.get("telephone")),
 				"createdAt": datetime.today().strftime("%Y-%m-%d %H:%M:%S")
 			}
 		except:
 			return jsonify({"status": -1, "response": "Invalid data format"})
 
 		for k in ("name", "email", "password", "telephone"):
-			if account[k] in (None, "", "None"):
+			if (account[k] == None):
 				return jsonify({"status": -1, "response": "No " + k + " field."})
 
 		res = DBConnection().insertOne("accounts", account)
@@ -33,6 +40,7 @@ class RegisterAccount(Resource):
 		return jsonify({"status": 0, "response": res})
 
 # Input: {email, password}
+#
 # Output: {
 #	status, (0 means ok)
 #	response (Account details with additional field "token" or error message)
@@ -60,6 +68,7 @@ class LoginAccount(Resource):
 		return jsonify({"status": 0, "response": res})
 
 # Input: {email}
+#
 # Output: {
 #	status, (0 means ok)
 #	response (Account details with additional field "token" or error message)
