@@ -9,6 +9,9 @@ from .storage.connection import Connection
 # status, (0 means ok)
 # response (Account details or error message)
 # }
+def Login():
+    data = {'name': 'nabin khadka'}
+    return jsonify(data), 400
 
 
 class RegisterAccount(Resource):
@@ -35,11 +38,11 @@ class RegisterAccount(Resource):
 
         for k in ("name", "email", "password", "telephone"):
             if (account[k] == None):
-                return jsonify({"status": -1, "response": "No " + k + " field."})
+                return jsonify({"message": "No " + k + " field."})
 
         res = Connection().insertOne("accounts", account)
 
-        return jsonify({"status": 0, "response": res})
+        return jsonify({"message": res})
 
 # Input: {email, password}
 #
@@ -64,12 +67,12 @@ class LoginAccount(Resource):
         res = Connection().findOne("accounts", query)
 
         if (res == None):
-            return jsonify({"status": -1, "response": "The authentication credentials cannot be considered valid"})
+            return jsonify({"message": "The authentication credentials cannot be considered valid"})
 
         res.pop("password", None)
         res["token"] = datetime.now() + timedelta(minutes=30)
 
-        return jsonify({"status": 0, "response": res})
+        return jsonify({"message": res})
 
 # Input: {email}
 #

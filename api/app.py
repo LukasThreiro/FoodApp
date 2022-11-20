@@ -2,12 +2,14 @@
 from flask import Flask
 from flask_restful import Api
 
-from services.account import LoginAccount, LogoutAccount, RegisterAccount
+from services.account import LoginAccount, LogoutAccount, RegisterAccount, Login
 from services.dish import AddDish, AvailableDishes
 from services.order import CreateOrder
 from services.restaurant import AddRestaurant, AvailableRestaurants
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 api = Api(app)
 
 # LOAD CONFIGURATION FROM A CONFIGURATION FILE
@@ -19,7 +21,6 @@ except:
     app.config.from_object(DefaultFlaskConfig)
 
 # API SETUP
-
 api.add_resource(RegisterAccount, RegisterAccount().url)
 api.add_resource(LoginAccount, LoginAccount().url)
 api.add_resource(LogoutAccount, LogoutAccount().url)

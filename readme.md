@@ -1,39 +1,27 @@
 # FoodApp Backend
 
-## Setup linux
+## Prerequisites
 
-`sudo apt-get update`
+- Install python
+- Install pip
+- Install virtualenv via pip
 
-`sudo apt-get install python3`
+## Run Linux/OS X
 
-`sudo apt-get install python3-pip`
-
-`sudo apt-get install virtualenv`
-
-`virtualenv venv`
-
-`. venv/bin/activate`
-
-`pip3 install -e .`
-
-## Run linux
-
-`python3 app.py`
-
-## Setup windows
-
-1. Zainstalować pythona https://www.python.org/downloads/windows/
-2. Zainstalować pip https://www.activestate.com/resources/quick-reads/how-to-install-pip-on-windows/
-3. Następnie
-
-`pip install virtualenv`
-
-`python -m venv .venv`
-
-`.venv\Scripts\activate.bat`
-
-`pip install -e .`
+```sh
+virtualenv venv
+. venv/bin/activate
+pip3 install -e .
+docker compose up -d
+python3 api/app.py
+```
 
 ## Run windows
 
-`python app.py`
+```sh
+python -m venv .venv
+.venv\Scripts\activate.bat
+pip install -e .
+docker compose up -d
+python api/app.py
+```
