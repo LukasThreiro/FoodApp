@@ -1,8 +1,0 @@
-venv
-.venv/
-__pycache__
-flaskConfig.py
-services/__pycache__
-services/db_connection/__pycache__
-services/db_connection/dbConfig.py
-FoodApp.egg-info/
