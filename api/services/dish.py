@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, Response
 from flask_restful import Resource
 from datetime import datetime
 from .storage.connection import Connection
@@ -6,7 +6,6 @@ from .storage.connection import Connection
 # Input: {name, price, description, restaurant}
 #
 # Output: {
-# status, (0 means ok)
 # response (Dish details or error message)
 # }
 
@@ -31,25 +30,29 @@ class AddDish(Resource):
                 "createdAt": datetime.today().strftime("%Y-%m-%d %H:%M:%S")
             }
         except:
-            return jsonify({"status": -1, "response": "Invalid data format"})
+            msg = str({"message": "Invalid data format"})
+            return Response(msg, status=400)
 
         for k in ("name", "price", "description"):
             if (dish[k] == None):
-                return jsonify({"status": -1, "response": "No " + k + " field."})
+                msg = str({"message": "No " + k + " field."})
+                return Response(msg, status=400)
 
         tmp = Connection().findByID("restaurants", dish["restaurant"])
 
         if (tmp == None):
-            return jsonify({"status": -1, "response": "There is no restaurant with this id"})
+            msg = str({"message": "There is no restaurant with this id"})
+            return Response(msg, status=400)
 
         res = Connection().insertOne("dishes", dish)
-        return jsonify({"status": 0, "response": res})
+        msg = str({"message": res})
+
+        return Response(msg, status=200)
 
 # Input: {restaurant_key}
 # (if restaurant_key is not given, returns dishes for all restaurants)
 #
 # Output: {
-# status, (0 means ok)
 # response (List of dishes or error message)
 # }
 
@@ -68,9 +71,8 @@ class AvailableDishes(Resource):
         try:
             restaurantKey = self.checkParam(request.form.get("restaurant_key"))
         except:
-            return jsonify({"status": -1, "response": "Invalid data format"})
-
-        print("resaurantKey: " + str(restaurantKey))
+            msg = str({"message": "Invalid data format"})
+            return Response(msg, status=400)
 
         if (restaurantKey == None):
             query = {}
@@ -78,4 +80,6 @@ class AvailableDishes(Resource):
             query = {"restaurant": restaurantKey}
 
         res = Connection().find("dishes", query)
-        return jsonify({"status": 0, "response": res})
+        msg = str({"message": res})
+        
+        return Response(msg, status=200)

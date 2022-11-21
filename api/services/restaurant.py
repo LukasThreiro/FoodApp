@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, Response
 from flask_restful import Resource
 from datetime import datetime
 from .storage.connection import Connection
@@ -6,7 +6,6 @@ from .storage.connection import Connection
 # Input: {name, address, telephone, description}
 #
 # Output: {
-# status, (0 means ok)
 # response (Restaurant details or error message)
 # }
 
@@ -23,7 +22,7 @@ class AddRestaurant(Resource):
 
     def post(self):
         try:
-            resteurant = {
+            restaurant = {
                 "name": self.checkParam(request.form.get("name")),
                 "address": self.checkParam(request.form.get("address")),
                 "telephone": self.checkParam(request.form.get("telephone")),
@@ -31,20 +30,23 @@ class AddRestaurant(Resource):
                 "createdAt": datetime.today().strftime("%Y-%m-%d %H:%M:%S")
             }
         except:
-            return jsonify({"status": -1, "response": "Invalid data format"})
+            msg = str({"message": "Invalid data format"})
+            return Response(msg, status=400)
 
         for k in ("name", "address", "telephone", "description"):
-            if (resteurant[k] == None):
-                return jsonify({"status": -1, "response": "No " + k + " field."})
+            if (restaurant[k] == None):
+                msg = str({"message": "No " + k + " field."})
+                return Response(msg, status=400)
 
-        res = Connection().insertOne("restaurants", resteurant)
-        return jsonify({"status": 0, "response": res})
+        res = Connection().insertOne("restaurants", restaurant)
+        msg = str({"message": res})
+
+        return Response(msg, status=200)
 
 
 # Input: {}
 #
 # Output: {
-# status, (0 means ok)
 # response (List of restaurants)
 # }
 class AvailableRestaurants(Resource):
@@ -53,4 +55,6 @@ class AvailableRestaurants(Resource):
 
     def post(self):
         res = Connection().find("restaurants", None)
-        return jsonify({"status": 0, "response": res})
+        msg = str({"message": res})
+        
+        return Response(msg, status=200)

@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, Response
 from flask_restful import Resource
 from datetime import datetime, timedelta
 from .storage.connection import Connection
@@ -6,13 +6,8 @@ from .storage.connection import Connection
 # Input: {name, email, password, telephone}
 #
 # Output: {
-# status, (0 means ok)
 # response (Account details or error message)
 # }
-def Login():
-    data = {'name': 'nabin khadka'}
-    return jsonify(data), 400
-
 
 class RegisterAccount(Resource):
     def __init__(self):
@@ -34,20 +29,22 @@ class RegisterAccount(Resource):
                 "createdAt": datetime.today().strftime("%Y-%m-%d %H:%M:%S")
             }
         except:
-            return jsonify({"status": -1, "response": "Invalid data format"})
+            msg = str({"message": "Invalid data format"})
+            return Response(msg, status=400)
 
         for k in ("name", "email", "password", "telephone"):
             if (account[k] == None):
-                return jsonify({"message": "No " + k + " field."})
+                msg = str({"message": "No " + k + " field."})
+                return Response(msg, status=400)
 
         res = Connection().insertOne("accounts", account)
+        msg = str({"message": res})
 
-        return jsonify({"message": res})
+        return Response(msg, status=200)
 
 # Input: {email, password}
 #
 # Output: {
-# status, (0 means ok)
 # response (Account details with additional field "token" or error message)
 # }
 
@@ -61,26 +58,28 @@ class LoginAccount(Resource):
             email = str(request.form.get("email"))
             password = str(request.form.get("password"))
         except:
-            return jsonify({"status": -1, "response": "Invalid data format"})
+            msg = str({"message": "Invalid data format"})
+            return Response(msg, status=400)
 
         query = {"email": email, "password": password}
         res = Connection().findOne("accounts", query)
 
         if (res == None):
-            return jsonify({"message": "The authentication credentials cannot be considered valid"})
+            msg = str({"message": "The authentication credentials cannot be considered valid"})
+            return Response(msg, status=400)
 
         res.pop("password", None)
         res["token"] = datetime.now() + timedelta(minutes=30)
 
-        return jsonify({"message": res})
+        msg = str({"message": res})
+        
+        return Response(msg, status=200)
 
 # Input: {email}
 #
 # Output: {
-# status, (0 means ok)
 # response (Account details with additional field "token" or error message)
 # }
-
 
 class LogoutAccount(Resource):
     def __init__(self):
@@ -90,15 +89,18 @@ class LogoutAccount(Resource):
         try:
             email = str(request.form.get("email"))
         except:
-            return jsonify({"status": -1, "response": "Invalid data format"})
+            msg = str({"message": "Invalid data format"})
+            return Response(msg, status=400)
 
         query = {"email": email}
         res = Connection().findOne("accounts", query)
 
         if (res == None):
-            return jsonify({"status": -1, "response": "No such account exists"})
+            msg = str({"message": "No such account exists"})
+            return Response(msg, status=400)
 
         res.pop("password", None)
         res["token"] = datetime.now() + timedelta(minutes=-1)
+        msg = str({"message": res})
 
-        return jsonify({"status": 0, "response": res})
+        return Response(msg, status=200)

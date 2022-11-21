@@ -1,4 +1,4 @@
-from flask import jsonify, request
+from flask import jsonify, request, Response
 from flask_restful import Resource
 from datetime import datetime
 from .storage.connection import Connection
@@ -7,7 +7,6 @@ from .storage.connection import Connection
 # (Separate items with a space)
 #
 # Output: {
-# status, (0 means ok)
 # response (Order details or error message)
 # }
 
@@ -33,33 +32,39 @@ class CreateOrder(Resource):
                 "createdAt": datetime.today().strftime("%Y-%m-%d %H:%M:%S")
             }
         except:
-            return jsonify({"status": -1, "response": "Invalid data format"})
+            msg = str({"message": "Invalid data format"})
+            return Response(msg, status=400)
 
         for k in ("account", "restaurant", "address", "status"):
             if (orderInfo[k] == None):
-                return jsonify({"status": -1, "response": "No " + k + " field."})
+                msg = str({"message": "No " + k + " field."})
+                return Response(msg, status=400)
 
         # CHECK IF RESTAURANT EXISTS
         tmp = Connection().findByID("restaurants", orderInfo["restaurant"])
 
         if (tmp == None):
-            return jsonify({"status": -1, "response": "There is no restaurant with this id"})
+            msg = str({"message": "There is no restaurant with this id"})
+            return Response(msg, status=400)
 
         # CHECK IF ACCOUNT EXISTS
         tmp = Connection().findByID("accounts", orderInfo["account"])
 
         if (tmp == None):
-            return jsonify({"status": -1, "response": "There is no account with this id"})
+            msg = str({"message": "There is no account with this id"})
+            return Response(msg, status=400)
 
         # CHECK ORDER STATUS
         if (orderInfo["status"] not in ("0", "1", "2")):
-            return jsonify({"status": -1, "response": "Incorrect order status"})
+            msg = str({"message": "Incorrect order status"})
+            return Response(msg, status=400)
 
         # CREATE ITEM LIST
         try:
             items = list(orderInfo["items"].split(" "))
         except:
-            return jsonify({"status": -1, "response": "incorrect item list format"})
+            msg = str({"message": "incorrect item list format"})
+            return Response(msg, status=400)
 
         for i in items:
             res = None
@@ -71,9 +76,11 @@ class CreateOrder(Resource):
                 pass
 
             if ((res == None) or (len(res) == 0)):
-                return jsonify({"status": -1, "response": "There is no item with id " + str(i)})
+                msg = str({"message": "There is no item with id " + str(i)})
+                return Response(msg, status=400)
 
         orderInfo["items"] = items
-
         res = Connection().insertOne("orders", orderInfo)
-        return jsonify({"status": 0, "response": res})
+        msg = str({"message": res})
+        
+        return Response(msg, status=200)

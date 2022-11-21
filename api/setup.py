@@ -6,6 +6,7 @@ setup(
 	install_requires = [
 		"Flask",
 		"Flask-RESTful",
+		"flask_cors",
 		"pymongo"
 	]
 )
