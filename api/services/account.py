@@ -1,7 +1,8 @@
-from flask import jsonify, request, Response
+from flask import request, Response
 from flask_restful import Resource
 from datetime import datetime, timedelta
 from .storage.connection import Connection
+from bson.json_util import dumps, loads
 
 # Input: {name, email, password, telephone}
 #
@@ -26,7 +27,7 @@ class RegisterAccount(Resource):
                 "email": self.checkParam(request.form.get("email")),
                 "password": self.checkParam(request.form.get("password")),
                 "telephone": self.checkParam(request.form.get("telephone")),
-                "createdAt": datetime.today().strftime("%Y-%m-%d %H:%M:%S")
+                "token": datetime.now() + timedelta(minutes=30)
             }
         except:
             msg = str({"message": "Invalid data format"})
@@ -38,9 +39,8 @@ class RegisterAccount(Resource):
                 return Response(msg, status=400)
 
         res = Connection().insertOne("accounts", account)
-        msg = str({"message": res})
-
-        return Response(msg, status=200)
+        response = dumps(res, indent = 2) 
+        return Response(response, status=200)
 
 # Input: {email, password}
 #
@@ -71,9 +71,9 @@ class LoginAccount(Resource):
         res.pop("password", None)
         res["token"] = datetime.now() + timedelta(minutes=30)
 
-        msg = str({"message": res})
+        response = dumps(res, indent = 2) 
         
-        return Response(msg, status=200)
+        return Response(response, status=200)
 
 # Input: {email}
 #
@@ -101,6 +101,6 @@ class LogoutAccount(Resource):
 
         res.pop("password", None)
         res["token"] = datetime.now() + timedelta(minutes=-1)
-        msg = str({"message": res})
+        msg = str(res)
 
         return Response(msg, status=200)

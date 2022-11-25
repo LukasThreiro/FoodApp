@@ -1,7 +1,10 @@
 import axios from "axios";
 import { useState } from "react";
-import { AxiosError } from "axios";
+import { AxiosResponse, AxiosError } from "axios";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import Context from "../../context/user";
+import React from "react";
 
 interface Input {
   name: string;
@@ -20,6 +23,7 @@ export default function Register() {
     password: "",
     telephone: "",
   });
+  const userContext = React.useContext(Context);
 
   const register = () => {
     if (input.name.length < 2) {
@@ -58,11 +62,21 @@ export default function Register() {
       .post(`http://localhost:6003/account/register`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      .then((res) => {
+      .then((res: AxiosResponse) => {
         setError("");
+        const user = {
+          _id: res.data._id,
+          name: res.data.name,
+          email: res.data.email,
+          telephone: res.data.telephone,
+          token: res.data.token.$date,
+        };
+        localStorage.setItem("data", JSON.stringify(res.data));
+        userContext.setUser(user);
         router.push("/");
       })
       .catch((err: AxiosError) => {
+        console.error(err);
         setError("error has occurred, try again later");
       });
   };
@@ -99,7 +113,7 @@ export default function Register() {
                 </h2>
 
                 <p className="mt-3 text-gray-500 dark:text-gray-300">
-                  Sign in to access your account
+                  Sign up to access your account
                 </p>
                 {error != "" && <p className="text-red-500">{error}</p>}
               </div>
@@ -188,19 +202,19 @@ export default function Register() {
                       onClick={register}
                       className="w-full px-4 py-2 tracking-wide text-white transition-colors duration-200 transform bg-blue-500 rounded-md hover:bg-blue-400 focus:outline-none focus:bg-blue-400 focus:ring focus:ring-blue-300 focus:ring-opacity-50"
                     >
-                      Sign in
+                      Sign up
                     </button>
                   </div>
                 </div>
 
                 <p className="mt-6 text-sm text-center text-gray-400">
-                  Don&#x27;t have an account yet?{" "}
-                  <a
-                    href="#"
+                  Already have an account?{" "}
+                  <Link
+                    href="/authentication/login"
                     className="text-blue-500 focus:outline-none focus:underline hover:underline"
                   >
-                    Sign up
-                  </a>
+                    Sign in
+                  </Link>
                   .
                 </p>
               </div>

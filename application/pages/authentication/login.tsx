@@ -1,7 +1,10 @@
 import axios from "axios";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { AxiosError } from "axios";
 import { useRouter } from "next/router";
+import Link from "next/link";
+import React from "react";
+import Context from "../../context/user";
 
 interface Input {
   email: string;
@@ -16,6 +19,7 @@ export default function Login() {
     email: "",
     password: "",
   });
+  const userContext = useContext(Context);
 
   const login = () => {
     if (!/\S+@\S+\.\S+/.test(input.email)) {
@@ -43,8 +47,16 @@ export default function Login() {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {
-        console.log(res);
         setError("");
+        const user = {
+          _id: res.data._id,
+          name: res.data.name,
+          email: res.data.email,
+          telephone: res.data.telephone,
+          token: res.data.token.$date,
+        };
+        localStorage.setItem("data", JSON.stringify(res.data));
+        userContext.setUser(user);
         router.push("/");
       })
       .catch((err: AxiosError) => {
@@ -98,6 +110,7 @@ export default function Login() {
                     </label>
                     <input
                       value={input.email}
+                      type="email"
                       onChange={(
                         event: React.ChangeEvent<HTMLInputElement>
                       ): void => {
@@ -143,12 +156,12 @@ export default function Login() {
 
                 <p className="mt-6 text-sm text-center text-gray-400">
                   Don&#x27;t have an account yet?{" "}
-                  <a
-                    href="#"
+                  <Link
+                    href="/authentication/register"
                     className="text-blue-500 focus:outline-none focus:underline hover:underline"
                   >
                     Sign up
-                  </a>
+                  </Link>
                   .
                 </p>
               </div>

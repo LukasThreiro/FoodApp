@@ -6,10 +6,10 @@ from services.account import LoginAccount, LogoutAccount, RegisterAccount
 from services.dish import AddDish, AvailableDishes
 from services.order import CreateOrder
 from services.restaurant import AddRestaurant, AvailableRestaurants
-#from flask_cors import CORS
+from flask_cors import CORS
 
 app = Flask(__name__)
-#CORS(app)
+CORS(app)
 api = Api(app)
 
 # LOAD CONFIGURATION FROM A CONFIGURATION FILE

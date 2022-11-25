@@ -1,4 +1,34 @@
+import Link from "next/link";
+import { useEffect, useContext } from "react";
+import Context from "../context/user";
+
 export default function Navigation() {
+  const userContext = useContext(Context);
+
+  useEffect(() => {
+    let item = localStorage.getItem("data");
+    if (item === null) {
+      return;
+    }
+
+    const data = JSON.parse(item);
+    if (data) {
+      const user = {
+        _id: data._id,
+        name: data.name,
+        email: data.email,
+        telephone: data.telephone,
+        token: data.token.$date,
+      };
+      userContext.setUser(user);
+    }
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("data");
+    userContext.setUser(null);
+  };
+
   return (
     <header>
       <input
@@ -30,12 +60,12 @@ export default function Navigation() {
                     cy="135.5"
                     r="49"
                     stroke="none"
-                    stroke-width="11"
+                    strokeWidth="11"
                     fill="currentColor"
                   />
                   <path
-                    fill-rule="evenodd"
-                    clip-rule="evenodd"
+                    fillRule="evenodd"
+                    clipRule="evenodd"
                     d="M157.616 38.7183C137.547 27.9866 113.297 28.3356 93.5 39.7654L60.0914 59.0538C39.6709 70.8436 27.0914 92.632 27.0914 116.212V154.788C27.0914 178.368 39.6709 200.156 60.0914 211.946L93.5 231.235C113.92 243.024 139.08 243.024 159.5 231.235L192.909 211.946C213.329 200.156 225.909 178.368 225.909 154.788V116.212C225.909 99.106 219.289 82.9431 207.857 70.8562C214.603 65.9281 219.348 58.424 220.644 49.7914C239.072 66.6422 249.909 90.6554 249.909 116.212V154.788C249.909 186.942 232.755 216.654 204.909 232.731L171.5 252.019C143.654 268.096 109.346 268.096 81.5 252.019L48.0914 232.731C20.2453 216.654 3.09137 186.942 3.09137 154.788V116.212C3.09137 84.0576 20.2453 54.3462 48.0914 38.2692L81.5 18.9808C109.138 3.02371 143.143 2.90471 170.876 18.6237C164.141 23.2603 159.27 30.4096 157.616 38.7183Z"
                     fill="currentColor"
                   />
@@ -84,22 +114,47 @@ export default function Navigation() {
               </div>
 
               <div className="w-full space-y-2 border-primary/10 dark:border-gray-700 flex flex-col -ml-1 sm:flex-row lg:space-y-0 md:w-max lg:border-l">
-                <a
-                  href="#"
-                  className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full focus:before:bg-sky-600/10 dark:focus:before:bg-sky-400/10 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
-                >
-                  <span className="relative text-sm font-semibold text-primary dark:text-primaryLight">
-                    Sign Up
-                  </span>
-                </a>
-                <a
-                  href="#"
-                  className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-sky-600 dark:before:bg-sky-400 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
-                >
-                  <span className="relative text-sm font-semibold text-white dark:text-gray-900">
-                    Login
-                  </span>
-                </a>
+                {!userContext.user && (
+                  <Link
+                    href="/authentication/register"
+                    className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full focus:before:bg-sky-600/10 dark:focus:before:bg-sky-400/10 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+                  >
+                    <span className="relative text-sm font-semibold text-primary dark:text-primaryLight">
+                      Sign Up
+                    </span>
+                  </Link>
+                )}
+                {!userContext.user && (
+                  <Link
+                    href="/authentication/login"
+                    className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full before:bg-sky-600 dark:before:bg-sky-400 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+                  >
+                    <span className="relative text-sm font-semibold text-white dark:text-gray-900">
+                      Login
+                    </span>
+                  </Link>
+                )}
+                {userContext.user && (
+                  <a
+                    href="#"
+                    className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full focus:before:bg-sky-600/10 dark:focus:before:bg-sky-400/10 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+                  >
+                    <span className="relative text-sm font-semibold text-primary dark:text-primaryLight">
+                      Welcome {userContext.user.name}
+                    </span>
+                  </a>
+                )}
+                {userContext.user && (
+                  <a
+                    onClick={logout}
+                    href="#"
+                    className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full focus:before:bg-sky-600/10 dark:focus:before:bg-sky-400/10 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
+                  >
+                    <span className="relative text-sm font-semibold text-primary dark:text-primaryLight">
+                      Logout
+                    </span>
+                  </a>
+                )}
               </div>
             </div>
           </div>
