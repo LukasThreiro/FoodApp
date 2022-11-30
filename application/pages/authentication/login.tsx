@@ -37,13 +37,13 @@ export default function Login() {
       return;
     }
 
-    let formData = new FormData();
+    let data = new FormData();
 
-    formData.append("email", input.email);
-    formData.append("password", input.password);
+    data.append("email", input.email);
+    data.append("password", input.password);
 
     axios
-      .post(`http://localhost:6003/account/login`, formData, {
+      .post(`http://localhost:6003/account/login`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res) => {

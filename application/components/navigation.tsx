@@ -88,6 +88,14 @@ export default function Navigation() {
                 <ul className="space-y-6 tracking-wide font-medium text-base lg:text-sm lg:flex lg:space-y-0">
                   <li>
                     <Link
+                      href="/"
+                      className="block md:px-4 transition hover:text-primary dark:hover:text-primaryLight"
+                    >
+                      <span>Home</span>
+                    </Link>
+                  </li>
+                  <li>
+                    <Link
                       href="/restaurant/home"
                       className="block md:px-4 transition hover:text-primary dark:hover:text-primaryLight"
                     >
@@ -95,20 +103,12 @@ export default function Navigation() {
                     </Link>
                   </li>
                   <li>
-                    <a
-                      href="#"
+                    <Link
+                      href="/order/home"
                       className="block md:px-4 transition hover:text-primary dark:hover:text-primaryLight"
                     >
-                      <span>Portfolio</span>
-                    </a>
-                  </li>
-                  <li>
-                    <a
-                      href="#"
-                      className="block md:px-4 transition hover:text-primary dark:hover:text-primaryLight"
-                    >
-                      <span>Services</span>
-                    </a>
+                      <span>Cart</span>
+                    </Link>
                   </li>
                 </ul>
               </div>

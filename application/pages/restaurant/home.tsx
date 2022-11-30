@@ -1,19 +1,53 @@
+import axios, { AxiosResponse, AxiosError } from "axios";
 import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
+
+interface Restaurant {
+  _id: string;
+  name: string;
+  address: string;
+  telephone: string;
+  description: string;
+  image: string;
+  createdAt: Date;
+}
 
 export default function Home() {
+  const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  useEffect(() => {
+    axios
+      .post(`http://localhost:6003/restaurant/all`, new FormData(), {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res: AxiosResponse) => {
+        setRestaurants(res.data);
+      })
+      .catch((err: AxiosError) => {
+        console.log(err);
+      });
+  }, []);
+
   return (
-    <>
-      <section className="bg-white dark:bg-gray-900">
-        <div className="container px-6 py-10 mx-auto">
-          <h1 className="text-3xl font-semibold text-gray-800 capitalize lg:text-4xl dark:text-white">
-            Restaurants
-          </h1>
+    <section className="bg-white dark:bg-gray-900">
+      <div className="pt-32 px-6 py-10 mx-auto">
+        <h1 className="text-3xl font-semibold text-gray-800 capitalize lg:text-4xl dark:text-white">
+          Restaurants
+        </h1>
+        <h4 className="text-xl my-4">What would you like to eat?</h4>
+        <Link
+          className="bg-blue-500 text-white px-8 py-2 rounded-md"
+          href="/restaurant/create"
+        >
+          Create new restaurant
+        </Link>
 
-          <div className="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2">
-            <div className="lg:flex">
+        <div className="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2">
+          {restaurants.map((restaurant) => (
+            <div className="lg:flex cursor-pointer" key={restaurant._id}>
               <img
                 className="object-cover w-full h-56 rounded-lg lg:w-64"
-                src="https://images.unsplash.com/photo-1515378960530-7c0da6231fb1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
+                src={restaurant.image}
                 alt=""
               />
 
@@ -22,122 +56,18 @@ export default function Home() {
                   href="#"
                   className="text-xl font-semibold text-gray-800 hover:underline dark:text-white "
                 >
-                  How to use sticky note for problem solving
+                  {restaurant.name}
                 </a>
+                <span className="text-md">{restaurant.description}</span>
 
                 <span className="text-sm text-gray-500 dark:text-gray-300">
-                  On: 20 October 2019
+                  Created: {restaurant.createdAt}
                 </span>
               </div>
             </div>
-
-            <div className="lg:flex">
-              <img
-                className="object-cover w-full h-56 rounded-lg lg:w-64"
-                src="https://images.unsplash.com/photo-1497032628192-86f99bcd76bc?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-                alt=""
-              />
-
-              <div className="flex flex-col justify-between py-6 lg:mx-6">
-                <a
-                  href="#"
-                  className="text-xl font-semibold text-gray-800 hover:underline dark:text-white "
-                >
-                  How to use sticky note for problem solving
-                </a>
-
-                <span className="text-sm text-gray-500 dark:text-gray-300">
-                  On: 20 October 2019
-                </span>
-              </div>
-            </div>
-
-            <div className="lg:flex">
-              <img
-                className="object-cover w-full h-56 rounded-lg lg:w-64"
-                src="https://images.unsplash.com/photo-1544654803-b69140b285a1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-                alt=""
-              />
-
-              <div className="flex flex-col justify-between py-6 lg:mx-6">
-                <a
-                  href="#"
-                  className="text-xl font-semibold text-gray-800 hover:underline dark:text-white "
-                >
-                  Morning routine to boost your mood
-                </a>
-
-                <span className="text-sm text-gray-500 dark:text-gray-300">
-                  On: 25 November 2020
-                </span>
-              </div>
-            </div>
-
-            <div className="lg:flex">
-              <img
-                className="object-cover w-full h-56 rounded-lg lg:w-64"
-                src="https://images.unsplash.com/photo-1530099486328-e021101a494a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1547&q=80"
-                alt=""
-              />
-
-              <div className="flex flex-col justify-between py-6 lg:mx-6">
-                <a
-                  href="#"
-                  className="text-xl font-semibold text-gray-800 hover:underline dark:text-white "
-                >
-                  All the features you want to know
-                </a>
-
-                <span className="text-sm text-gray-500 dark:text-gray-300">
-                  On: 30 September 2020
-                </span>
-              </div>
-            </div>
-
-            <div className="lg:flex">
-              <img
-                className="object-cover w-full h-56 rounded-lg lg:w-64"
-                src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1484&q=80"
-                alt=""
-              />
-
-              <div className="flex flex-col justify-between py-6 lg:mx-6">
-                <a
-                  href="#"
-                  className="text-xl font-semibold text-gray-800 hover:underline dark:text-white "
-                >
-                  Minimal workspace for your inspirations
-                </a>
-
-                <span className="text-sm text-gray-500 dark:text-gray-300">
-                  On: 13 October 2019
-                </span>
-              </div>
-            </div>
-
-            <div className="lg:flex">
-              <img
-                className="object-cover w-full h-56 rounded-lg lg:w-64"
-                src="https://images.unsplash.com/photo-1624996379697-f01d168b1a52?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-                alt=""
-              />
-
-              <div className="flex flex-col justify-between py-6 lg:mx-6">
-                <a
-                  href="#"
-                  className="text-xl font-semibold text-gray-800 hover:underline dark:text-white "
-                >
-                  What do you want to know about Blockchane
-                </a>
-
-                <span className="text-sm text-gray-500 dark:text-gray-300">
-                  On: 20 October 2019
-                </span>
-              </div>
-            </div>
-          </div>
+          ))}
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 }

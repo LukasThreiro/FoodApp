@@ -2,6 +2,7 @@ from flask import jsonify, request, Response
 from flask_restful import Resource
 from datetime import datetime
 from .storage.connection import Connection
+from bson.json_util import dumps, loads
 
 # Input: {name, address, telephone, description}
 #
@@ -27,6 +28,7 @@ class AddRestaurant(Resource):
                 "address": self.checkParam(request.form.get("address")),
                 "telephone": self.checkParam(request.form.get("telephone")),
                 "description": self.checkParam(request.form.get("description")),
+                "image": self.checkParam(request.form.get("image")),
                 "createdAt": datetime.today().strftime("%Y-%m-%d %H:%M:%S")
             }
         except:
@@ -39,9 +41,8 @@ class AddRestaurant(Resource):
                 return Response(msg, status=400)
 
         res = Connection().insertOne("restaurants", restaurant)
-        msg = str({"message": res})
-
-        return Response(msg, status=200)
+        response = dumps(res, indent = 2) 
+        return Response(response, status=200)
 
 
 # Input: {}
@@ -55,6 +56,6 @@ class AvailableRestaurants(Resource):
 
     def post(self):
         res = Connection().find("restaurants", None)
-        msg = str({"message": res})
+        response = dumps(res, indent = 2) 
         
-        return Response(msg, status=200)
+        return Response(response, status=200)

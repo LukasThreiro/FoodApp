@@ -1,4 +1,45 @@
+import axios, { AxiosError, AxiosResponse } from "axios";
+import { useRouter } from "next/router";
+import { useState } from "react";
+
+interface Input {
+  name: string;
+  address: string;
+  telephone: string;
+  description: string;
+  image: string;
+}
+
 export default function Create() {
+  const router = useRouter();
+  const [input, setInput] = useState<Input>({
+    name: "dsadsa",
+    address: "",
+    telephone: "",
+    description: "",
+    image: "",
+  });
+
+  const createRestaurant = () => {
+    let data = new FormData();
+    data.append("name", input.name);
+    data.append("address", input.address);
+    data.append("telephone", input.telephone);
+    data.append("description", input.description);
+    data.append("image", input.image);
+
+    axios
+      .post(`http://localhost:6003/restaurant/add`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then((res: AxiosResponse) => {
+        router.push("/restaurant/home");
+      })
+      .catch((err: AxiosError) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <section className="bg-white dark:bg-gray-900">
@@ -35,11 +76,11 @@ export default function Create() {
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      stroke-width="2"
+                      strokeWidth="2"
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
                       />
                     </svg>
@@ -54,11 +95,11 @@ export default function Create() {
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      stroke-width="2"
+                      strokeWidth="2"
                     >
                       <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                         d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                       />
                     </svg>
@@ -71,20 +112,18 @@ export default function Create() {
               <form className="grid grid-cols-1 gap-6 mt-8 md:grid-cols-2">
                 <div>
                   <label className="block mb-2 text-sm text-gray-600 dark:text-gray-200">
-                    First Name
+                    Address
                   </label>
                   <input
-                    type="text"
-                    placeholder="John"
-                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
-                  />
-                </div>
-
-                <div>
-                  <label className="block mb-2 text-sm text-gray-600 dark:text-gray-200">
-                    Last name
-                  </label>
-                  <input
+                    onChange={(
+                      event: React.ChangeEvent<HTMLInputElement>
+                    ): void => {
+                      setInput({
+                        ...input,
+                        address: event.target.value,
+                      });
+                    }}
+                    value={input.address}
                     type="text"
                     placeholder="Snow"
                     className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
@@ -93,10 +132,18 @@ export default function Create() {
 
                 <div>
                   <label className="block mb-2 text-sm text-gray-600 dark:text-gray-200">
-                    Phone number
+                    Telephone
                   </label>
                   <input
-                    type="text"
+                    value={input.telephone}
+                    onChange={(
+                      event: React.ChangeEvent<HTMLInputElement>
+                    ): void => {
+                      setInput({
+                        ...input,
+                        telephone: event.target.value,
+                      });
+                    }}
                     placeholder="XXX-XX-XXXX-XXX"
                     className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
@@ -104,10 +151,18 @@ export default function Create() {
 
                 <div>
                   <label className="block mb-2 text-sm text-gray-600 dark:text-gray-200">
-                    Email address
+                    Description
                   </label>
                   <input
-                    type="email"
+                    value={input.description}
+                    onChange={(
+                      event: React.ChangeEvent<HTMLInputElement>
+                    ): void => {
+                      setInput({
+                        ...input,
+                        description: event.target.value,
+                      });
+                    }}
                     placeholder="johnsnow@example.com"
                     className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
@@ -115,28 +170,28 @@ export default function Create() {
 
                 <div>
                   <label className="block mb-2 text-sm text-gray-600 dark:text-gray-200">
-                    Password
+                    Image
                   </label>
                   <input
-                    type="password"
+                    value={input.image}
+                    onChange={(
+                      event: React.ChangeEvent<HTMLInputElement>
+                    ): void => {
+                      setInput({
+                        ...input,
+                        image: event.target.value,
+                      });
+                    }}
                     placeholder="Enter your password"
                     className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
                   />
                 </div>
 
-                <div>
-                  <label className="block mb-2 text-sm text-gray-600 dark:text-gray-200">
-                    Confirm password
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="Enter your password"
-                    className="block w-full px-5 py-3 mt-2 text-gray-700 placeholder-gray-400 bg-white border border-gray-200 rounded-md dark:placeholder-gray-600 dark:bg-gray-900 dark:text-gray-300 dark:border-gray-700 focus:border-blue-400 dark:focus:border-blue-400 focus:ring-blue-400 focus:outline-none focus:ring focus:ring-opacity-40"
-                  />
-                </div>
-
-                <button className="flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-md hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50">
-                  <span>Sign Up </span>
+                <p
+                  onClick={() => createRestaurant()}
+                  className="cursor-pointer flex items-center justify-between w-full px-6 py-3 text-sm tracking-wide text-white capitalize transition-colors duration-300 transform bg-blue-500 rounded-md hover:bg-blue-400 focus:outline-none focus:ring focus:ring-blue-300 focus:ring-opacity-50"
+                >
+                  <span>Create restaurant</span>
 
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -150,7 +205,7 @@ export default function Create() {
                       clipRule="evenodd"
                     />
                   </svg>
-                </button>
+                </p>
               </form>
             </div>
           </div>

@@ -17,23 +17,23 @@ export default function Create() {
                   <path
                     d="M2.91681 7H11.0835"
                     stroke="currentColor"
-                    stroke-width="0.666667"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="0.666667"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M2.91681 7L5.25014 9.33333"
                     stroke="currentColor"
-                    stroke-width="0.666667"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="0.666667"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                   <path
                     d="M2.91681 7.00002L5.25014 4.66669"
                     stroke="currentColor"
-                    stroke-width="0.666667"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
+                    strokeWidth="0.666667"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
                   />
                 </svg>
                 <p className="text-sm leading-none">Back</p>
@@ -178,8 +178,8 @@ export default function Create() {
                       <path
                         d="M3.5 5.75L8 10.25L12.5 5.75"
                         stroke="#27272A"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                     <svg
@@ -194,8 +194,8 @@ export default function Create() {
                       <path
                         d="M3.5 5.75L8 10.25L12.5 5.75"
                         stroke="#27272A"
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
                       />
                     </svg>
                     <div
