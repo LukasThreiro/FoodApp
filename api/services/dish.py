@@ -39,6 +39,7 @@ class AddDish(Resource):
                 msg = str({"message": "No " + k + " field."})
                 return Response(msg, status=400)
 
+        print('key', dish["restaurant_key"])
         tmp = Connection().findByID("restaurants", dish["restaurant_key"])
 
         if (tmp == None):
@@ -78,6 +79,5 @@ class AvailableDishes(Resource):
             query = {}
         else:
             query = {"restaurant_key": restaurantKey}
-
         res = Connection().find("dishes", query)
         return Response(response = dumps(res, indent = 2), status=200)

@@ -1,6 +1,7 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 interface Restaurant {
@@ -14,6 +15,7 @@ interface Restaurant {
 }
 
 export default function Home() {
+  const router = useRouter();
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
   useEffect(() => {
     axios
@@ -44,7 +46,16 @@ export default function Home() {
 
         <div className="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2">
           {restaurants.map((restaurant) => (
-            <div className="lg:flex cursor-pointer" key={restaurant._id}>
+            <div
+              onClick={() =>
+                router.push({
+                  pathname: `/dish/home`,
+                  query: { restaurant_key: restaurant._id },
+                })
+              }
+              className="lg:flex cursor-pointer"
+              key={restaurant._id}
+            >
               <img
                 className="object-cover w-full h-56 rounded-lg lg:w-64"
                 src={restaurant.image}
