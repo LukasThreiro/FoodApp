@@ -3,7 +3,7 @@ import { useState } from "react";
 import { AxiosResponse, AxiosError } from "axios";
 import { useRouter } from "next/router";
 import Link from "next/link";
-import Context from "../../context/user";
+import Context, { User } from "../../context/user";
 import React from "react";
 
 interface Input {
@@ -62,17 +62,9 @@ export default function Register() {
       .post(`http://localhost:6003/account/register`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      .then((res: AxiosResponse) => {
+      .then((res: AxiosResponse<User>) => {
         setError("");
-        const user = {
-          _id: res.data._id,
-          name: res.data.name,
-          email: res.data.email,
-          telephone: res.data.telephone,
-          token: res.data.token.$date,
-        };
-        localStorage.setItem("data", JSON.stringify(res.data));
-        userContext.setUser(user);
+        userContext.setUser(res.data);
         router.push("/");
       })
       .catch((err: AxiosError) => {

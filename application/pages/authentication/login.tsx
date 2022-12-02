@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import { useContext, useState } from "react";
 import { AxiosError } from "axios";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import React from "react";
-import Context from "../../context/user";
+import Context, { User } from "../../context/user";
 
 interface Input {
   email: string;
@@ -46,17 +46,9 @@ export default function Login() {
       .post(`http://localhost:6003/account/login`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      .then((res) => {
+      .then((res: AxiosResponse<User>) => {
         setError("");
-        const user = {
-          _id: res.data._id,
-          name: res.data.name,
-          email: res.data.email,
-          telephone: res.data.telephone,
-          token: res.data.token.$date,
-        };
-        localStorage.setItem("data", JSON.stringify(res.data));
-        userContext.setUser(user);
+        userContext.setUser(res.data);
         router.push("/");
       })
       .catch((err: AxiosError) => {

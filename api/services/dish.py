@@ -4,13 +4,6 @@ from datetime import datetime
 from .storage.connection import Connection
 from bson.json_util import dumps, loads
 
-# Input: {name, price, description, restaurant}
-#
-# Output: {
-# response (Dish details or error message)
-# }
-
-
 class AddDish(Resource):
     def __init__(self):
         self.url = "/dish/add"
@@ -25,7 +18,7 @@ class AddDish(Resource):
         try:
             dish = {
                 "name": self.checkParam(request.form.get("name")),
-                "price": self.checkParam(request.form.get("price")),
+                "price": float(self.checkParam(request.form.get("price"))),
                 "description": self.checkParam(request.form.get("description")),
                 "restaurant_key": self.checkParam(request.form.get("restaurant_key")),
                 "image": self.checkParam(request.form.get("image")),
@@ -39,7 +32,6 @@ class AddDish(Resource):
                 msg = str({"message": "No " + k + " field."})
                 return Response(msg, status=400)
 
-        print('key', dish["restaurant_key"])
         tmp = Connection().findByID("restaurants", dish["restaurant_key"])
 
         if (tmp == None):
@@ -49,14 +41,6 @@ class AddDish(Resource):
         res = Connection().insertOne("dishes", dish)
         
         return Response(response = dumps(res, indent = 2), status=200)
-
-# Input: {restaurant_key}
-# (if restaurant_key is not given, returns dishes for all restaurants)
-#
-# Output: {
-# response (List of dishes or error message)
-# }
-
 
 class AvailableDishes(Resource):
     def __init__(self):

@@ -1,33 +1,11 @@
 import Link from "next/link";
 import { useEffect, useContext } from "react";
-import Context from "../context/user";
+import UserContext from "../context/user";
+import DishContext from "../context/dish";
 
 export default function Navigation() {
-  const userContext = useContext(Context);
-
-  useEffect(() => {
-    let item = localStorage.getItem("data");
-    if (item === null) {
-      return;
-    }
-
-    const data = JSON.parse(item);
-    if (data) {
-      const user = {
-        _id: data._id,
-        name: data.name,
-        email: data.email,
-        telephone: data.telephone,
-        token: data.token.$date,
-      };
-      userContext.setUser(user);
-    }
-  }, []);
-
-  const logout = () => {
-    localStorage.removeItem("data");
-    userContext.setUser(null);
-  };
+  const userContext = useContext(UserContext);
+  const dishContext = useContext(DishContext);
 
   return (
     <header>
@@ -84,7 +62,7 @@ export default function Navigation() {
               </label>
             </div>
             <div className="navmenu hidden w-full flex-wrap justify-end items-center mb-16 space-y-8 p-6 border border-gray-100 rounded-3xl shadow-2xl shadow-gray-300/20 bg-white dark:bg-gray-800 lg:space-y-0 lg:p-0 lg:m-0 lg:flex md:flex-nowrap lg:bg-transparent lg:w-7/12 lg:shadow-none dark:shadow-none dark:border-gray-700 lg:border-0">
-              <div className="text-gray-600 dark:text-gray-300 lg:pr-4">
+              <div className="relative text-gray-600 dark:text-gray-300 lg:pr-4">
                 <ul className="space-y-6 tracking-wide font-medium text-base lg:text-sm lg:flex lg:space-y-0">
                   <li>
                     <Link
@@ -109,6 +87,9 @@ export default function Navigation() {
                     >
                       <span>Cart</span>
                     </Link>
+                  </li>
+                  <li className="absolute top-3 right-4 rounded-xl bg-blue-500 text-white py-0.5 px-2">
+                    {dishContext.dishes.length}
                   </li>
                 </ul>
               </div>
@@ -146,7 +127,7 @@ export default function Navigation() {
                 )}
                 {userContext.user && (
                   <a
-                    onClick={logout}
+                    onClick={() => userContext.setUser(null)}
                     href="#"
                     className="relative flex h-9 ml-auto items-center justify-center sm:px-6 before:absolute before:inset-0 before:rounded-full focus:before:bg-sky-600/10 dark:focus:before:bg-sky-400/10 before:transition before:duration-300 hover:before:scale-105 active:duration-75 active:before:scale-95"
                   >

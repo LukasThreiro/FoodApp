@@ -1,20 +1,14 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-
-interface Dish {
-  _id: string;
-  name: string;
-  price: string;
-  description: string;
-  restaurant_key: string;
-  image: string;
-}
+import { useContext, useEffect, useState } from "react";
+import DishContext from "../../context/dish";
+import { Dish } from "../../context/dish";
 
 export default function Home() {
   const router = useRouter();
   const [dishes, setDishes] = useState<Dish[]>([]);
+  const dishContext = useContext(DishContext);
   useEffect(() => {
     const restaurant_key = router.query.restaurant_key as string;
     const data = new FormData();
@@ -79,7 +73,12 @@ export default function Home() {
 
                 <p className="mt-2 text-gray-500 capitalize">{dish.price} $</p>
 
-                <p className="px-8 bg-blue-600 text-white rounded-md cursor-pointer">
+                <p
+                  onClick={() =>
+                    dishContext.setDishes([...dishContext.dishes, dish])
+                  }
+                  className="px-8 bg-blue-600 text-white rounded-md cursor-pointer"
+                >
                   Add to cart
                 </p>
 
