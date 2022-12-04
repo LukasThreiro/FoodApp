@@ -13,7 +13,7 @@ virtualenv venv
 . venv/bin/activate
 pip3 install -e .
 docker compose up -d
-python3 api/app.py
+python3 app.py
 ```
 
 ## Run windows
@@ -23,5 +23,5 @@ python -m venv .venv
 .venv\Scripts\activate.bat
 pip install -e .
 docker compose up -d
-python api/app.py
+python app.py
 ```
