@@ -27,7 +27,7 @@ export default function Home() {
   }
 
   let shipping: number = 0;
-  if (total < 50) {
+  if (dishContext.dishes.length != 0 && total < 50) {
     shipping = 10;
   }
 
@@ -51,7 +51,42 @@ export default function Home() {
     total: 0,
   });
 
+  const [error, setError] = useState<string>("");
+  const validate = (): string => {
+    if (input.name.length < 2 || input.name.length > 50) {
+      return "Name has to be in range of 2 to 50 characters";
+    }
+
+    if (!/\S+@\S+\.\S+/.test(input.email)) {
+      return "please provide valid email address";
+    }
+
+    if (input.address.length < 2 || input.address.length > 50) {
+      return "Address has to be in range of 2 to 50 characters";
+    }
+
+    if (input.city.length < 2 || input.city.length > 50) {
+      return "City has to be in range of 2 to 50 characters";
+    }
+
+    if (input.state.length < 2 || input.state.length > 50) {
+      return "State has to be in range of 2 to 50 characters";
+    }
+
+    if (input.card.length != 10) {
+      return "Invalid card number";
+    }
+
+    return "";
+  };
+
   const create = () => {
+    const message = validate();
+    if (message !== "") {
+      setError(message);
+      return;
+    }
+
     let data = new FormData();
     data.append("name", input.name);
     data.append("address", input.address);
@@ -66,10 +101,12 @@ export default function Home() {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((_: AxiosResponse) => {
+        setError("");
         dishContext.setDishes([]);
         router.push("/success");
       })
       .catch((err: AxiosError) => {
+        setError(err.message);
         console.log(err);
       });
   };
@@ -210,6 +247,7 @@ export default function Home() {
           <div className="rounded-md">
             <form id="payment-form" method="POST" action="">
               <section>
+                {error && <p className="text-red-500 text-xl">{error}</p>}
                 <h2 className="uppercase tracking-wide text-lg font-semibold text-gray-700 my-2">
                   Shipping & Billing Information
                 </h2>
@@ -322,6 +360,7 @@ export default function Home() {
             </section>
           </div>
           <button
+            disabled={total != 0 ? false : true}
             onClick={create}
             className="submit-button px-4 py-3 rounded-full bg-blue-800 text-white focus:ring focus:outline-none w-full text-xl font-semibold transition-colors"
           >

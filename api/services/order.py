@@ -33,6 +33,7 @@ class CreateOrder(Resource):
                 "card": self.checkParam(request.form.get("card")),
                 "total": int(self.checkParam(request.form.get("total"))),
                 "items": json.loads(request.form.get("items")),
+                "status": 0
             }
         except:
             msg = str({"message": "Invalid data format"})

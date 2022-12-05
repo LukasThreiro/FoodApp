@@ -1,8 +1,8 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import UserContext from "../../context/user";
 
 interface Restaurant {
   _id: string;
@@ -17,6 +17,8 @@ interface Restaurant {
 export default function Home() {
   const router = useRouter();
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const userContext = useContext(UserContext);
+
   useEffect(() => {
     axios
       .post(`http://localhost:6003/restaurant/all`, new FormData(), {
@@ -37,13 +39,14 @@ export default function Home() {
           Restaurants
         </h1>
         <h4 className="text-xl my-4">What would you like to eat?</h4>
-        <Link
-          className="bg-blue-500 text-white px-8 py-2 rounded-md"
-          href="/restaurant/create"
-        >
-          Create new restaurant
-        </Link>
-
+        {userContext.user && (
+          <Link
+            className="bg-blue-500 text-white px-8 py-2 rounded-md"
+            href="/restaurant/create"
+          >
+            Create new restaurant
+          </Link>
+        )}
         <div className="grid grid-cols-1 gap-8 mt-8 md:mt-16 md:grid-cols-2">
           {restaurants.map((restaurant) => (
             <div

@@ -1,7 +1,8 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useContext, useState } from "react";
+import UserContext from "../../context/user";
 
 interface Dish {
   name: string;
@@ -22,7 +23,36 @@ export default function Create() {
       "https://images.pexels.com/photos/2087748/pexels-photo-2087748.jpeg?auto=compress&cs=tinysrgb&w=1200",
   });
 
+  const userContext = useContext(UserContext);
+
+  const [error, setError] = useState<string>("");
+  const validate = (): string => {
+    if (dish.name.length < 2 || dish.name.length > 50) {
+      return "Name has to be in range of 2 to 50 characters";
+    }
+
+    if (isNaN(parseFloat(dish.price))) {
+      return "Price is not a valid price";
+    }
+
+    if (dish.description.length < 2 || dish.description.length > 50) {
+      return "Description has to be in range of 2 to 50 characters";
+    }
+
+    if (userContext.user === null) {
+      return "you need to logged in to perform this action";
+    }
+
+    return "";
+  };
+
   const create = () => {
+    const message = validate();
+    if (message !== "") {
+      setError(message);
+      return;
+    }
+
     let data = new FormData();
     data.append("name", dish.name);
     data.append("price", dish.price);
@@ -35,6 +65,7 @@ export default function Create() {
         headers: { "Content-Type": "multipart/form-data" },
       })
       .then((res: AxiosResponse) => {
+        setError("");
         router.push({
           pathname: "/dish/home",
           query: {
@@ -43,6 +74,7 @@ export default function Create() {
         });
       })
       .catch((err: AxiosError) => {
+        setError(err.message);
         console.log(err);
       });
   };
@@ -102,13 +134,14 @@ export default function Create() {
             </div>
 
             <div className="flex flex-col xl:flex-row justify-center xl:justify-between space-y-6 xl:space-y-0 xl:space-x-6 w-full">
-              <div className="xl:w-3/5 flex flex-col sm:flex-row xl:flex-col justify-center items-center bg-gray-100 dark:bg-gray-800 py-7 sm:py-0 xl:py-10 px-10 xl:w-full">
+              <div className="xl:w-3/5 flex flex-col sm:flex-row xl:flex-col justify-center items-center bg-gray-100 dark:bg-gray-800 py-7 sm:py-0 xl:py-10 px-10 xl:w-full rounded-lg">
                 <div className="mt-6 sm:mt-0 xl:my-10 xl:px-20 w-52 sm:w-96 xl:w-auto">
                   <img src={dish.image} alt="headphones" />
                 </div>
               </div>
 
-              <div className="p-8 bg-gray-100 dark:bg-gray-800 flex flex-col lg:w-full xl:w-3/5">
+              <div className="p-8 bg-gray-100 dark:bg-gray-800 flex flex-col lg:w-full xl:w-3/5 rounded-lg">
+                {error && <p className="text-red-500 text-lg">{error}</p>}
                 <label className="mt-8 text-base leading-4 text-gray-800 dark:text-gray-50">
                   Name
                 </label>

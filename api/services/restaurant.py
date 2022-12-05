@@ -37,8 +37,7 @@ class AddRestaurant(Resource):
 
         for k in ("name", "address", "telephone", "description"):
             if (restaurant[k] == None):
-                msg = str({"message": "No " + k + " field."})
-                return Response(msg, status=400)
+                return Response(dumps("No " + k + " field", indent = 2), status=400)
 
         res = Connection().insertOne("restaurants", restaurant)
         response = dumps(res, indent = 2) 

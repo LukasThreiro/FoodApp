@@ -4,11 +4,14 @@ import { useRouter } from "next/router";
 import { useContext, useEffect, useState } from "react";
 import DishContext from "../../context/dish";
 import { Dish } from "../../context/dish";
+import UserContext from "../../context/user";
 
 export default function Home() {
   const router = useRouter();
   const [dishes, setDishes] = useState<Dish[]>([]);
   const dishContext = useContext(DishContext);
+  const userContext = useContext(UserContext);
+
   useEffect(() => {
     const restaurant_key = router.query.restaurant_key as string;
     const data = new FormData();
@@ -20,8 +23,7 @@ export default function Home() {
       .post(`http://localhost:6003/dish/all`, data, {
         headers: { "Content-Type": "multipart/form-data" },
       })
-      .then((res: AxiosResponse) => {
-        console.log(res.data);
+      .then((res: AxiosResponse<Dish[]>) => {
         setDishes(res.data);
       })
       .catch((err: AxiosError) => {
@@ -32,7 +34,21 @@ export default function Home() {
   return (
     <>
       <section className="bg-white dark:bg-gray-900">
-        <div className="container px-6 py-10 mx-auto">
+        <div className="container px-6 py-10 mx-auto pt-24">
+          {userContext.user && (
+            <Link
+              className="bg-blue-500 text-white px-8 py-2 rounded-md"
+              href={{
+                pathname: "/dish/create",
+                query: {
+                  restaurant_key: router.query.restaurant_key,
+                },
+              }}
+            >
+              Add dish
+            </Link>
+          )}
+
           <h1 className="mt-12 text-3xl font-semibold text-center text-gray-800 capitalize lg:text-4xl dark:text-white">
             Our Executive Team
           </h1>
@@ -42,18 +58,6 @@ export default function Home() {
             incidunt ex placeat modi magni quia error alias, adipisci rem
             similique, at omnis eligendi optio eos harum.
           </p>
-
-          <Link
-            className="bg-blue-500 text-white px-8 py-2 rounded-md"
-            href={{
-              pathname: "/dish/create",
-              query: {
-                restaurant_key: router.query.restaurant_key,
-              },
-            }}
-          >
-            Add dish
-          </Link>
 
           <div className="grid grid-cols-1 gap-8 mt-8 xl:mt-16 md:grid-cols-2 xl:grid-cols-4">
             {dishes.map((dish) => (
