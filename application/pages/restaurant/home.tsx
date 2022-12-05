@@ -75,7 +75,7 @@ export default function Home() {
                 <span className="text-md">{restaurant.description}</span>
 
                 <span className="text-sm text-gray-500 dark:text-gray-300">
-                  Created: {restaurant.createdAt}
+                  Created: {restaurant.createdAt.toString()}
                 </span>
               </div>
             </div>

@@ -41,10 +41,6 @@ export default function Create() {
       return "Address has to be in range of 2 to 50 characters";
     }
 
-    if (userContext.user === null) {
-      return "you need to be logged in to perform this operation";
-    }
-
     return "";
   };
 
@@ -52,6 +48,11 @@ export default function Create() {
     const message = validate();
     if (message !== "") {
       setError(message);
+      return;
+    }
+
+    if (userContext.user === null) {
+      setError("you need to be logged in to perform this operation");
       return;
     }
 
