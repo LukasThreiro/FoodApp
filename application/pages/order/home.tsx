@@ -351,6 +351,14 @@ export default function Home() {
                 <label className="flex border-b border-gray-200 h-12 py-3 items-center">
                   <span className="text-right px-2">Card</span>
                   <input
+                    onChange={(
+                      event: React.ChangeEvent<HTMLInputElement>
+                    ): void => {
+                      setInput({
+                        ...input,
+                        card: event.target.value,
+                      });
+                    }}
                     name="card"
                     className="focus:outline-none px-3 w-full"
                     placeholder="Card number MM/YY CVC"
