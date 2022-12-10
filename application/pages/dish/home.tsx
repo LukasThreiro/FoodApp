@@ -13,6 +13,8 @@ export default function Home() {
   const userContext = useContext(UserContext);
 
   useEffect(() => {
+    if (!router.isReady) return;
+
     const restaurant_key = router.query.restaurant_key as string;
     const data = new FormData();
     if (restaurant_key !== undefined) {
@@ -29,7 +31,7 @@ export default function Home() {
       .catch((err: AxiosError) => {
         console.log(err);
       });
-  }, []);
+  }, [router.isReady]);
 
   return (
     <>
